@@ -1,0 +1,32 @@
+select#remote-select {
+	float: right;
+}
+.remote-delete {
+	margin-bottom: 20px;
+	display: block;
+}
+.remote {
+	margin: 0 auto;
+	text-align: center;
+	line-height: 50px;
+}
+
+.remote a {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
+.progressBar-progressTrack {
+	background-color: lightgrey;
+}
+.progressBar-progress {
+	background-color: grey;
+	text-align: right;
+	line-height: 25px;
+	padding-right: 5px;
+}
+
+.progressBar-totalTime {
+	text-align: right;
+}
