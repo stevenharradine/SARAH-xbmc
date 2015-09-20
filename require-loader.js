@@ -88,7 +88,7 @@ require (['../../js/jquery-1.6.2.min'], function ($) {
 			level = level > 100 ? 100 : level;
 
 			jQuery.ajax({
-				url: 'http://' + getUrl() + '/jsonrpc?request={"jsonrpc":"2.0","method":"Application.SetVolume","params":{"volume":' + level + '},"id":1}',
+				url: 'proxy.php?url=http://' + getUrl() + '/jsonrpc?request={"jsonrpc":"2.0","method":"Application.SetVolume","params":{"volume":' + level + '},"id":1}',
 			});
 
 			jQuery("#volLevel").val( level );
