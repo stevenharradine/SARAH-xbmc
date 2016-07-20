@@ -9,13 +9,13 @@
 			$output = <<<EOD
 	<select id="remote-select">
 EOD;
-			while (($remotes_row = mysql_fetch_array( $remotes_data )) != null) {
-				$id = $remotes_row['REMOTE_ID'];
-				$name = $remotes_row['name'];
+			for ($i = 0; $i < count ($remotes_data); $i++) {
+				$REMOTE_ID = $remotes_data[$i]['REMOTE_ID'];
+				$name = $remotes_data[$i]['name'];
 
-				$attr = $remote_id == $id ? ' selected="selected"' : '';
+				$attr = $remote_id == $REMOTE_ID ? ' selected="selected"' : '';
 
-				$output .= "<option value='$id'$attr>$name</option>";
+				$output .= "<option value='$REMOTE_ID'$attr>$name</option>";
 			}
 			$output .= '</select>';
 

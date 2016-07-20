@@ -2,6 +2,15 @@
 	class XbmcRemoteManager {
 		const timeout = 3;
 
+		public function get_link () {
+			global $DB_ADDRESS;
+			global $DB_USER;
+			global $DB_PASS;
+			global $DB_NAME;
+
+			return $link = DB_Connect($DB_ADDRESS, $DB_USER, $DB_PASS, $DB_NAME);
+		}
+
 		public function init () {
 			global $sessionManager;
 
@@ -36,17 +45,26 @@ EOD;
 		}
 
 		public function getRemotes () {
-			global $sessionManager;
-			$user_id = $sessionManager->getUserId();
+			$link = XbmcRemoteManager::get_link();
+			$USER_ID = $_SESSION['USER_ID'];
 
 			$sql = <<<EOD
 SELECT * 
 FROM  `xbmc_remote` 
-WHERE  `USER_ID` = $user_id
+WHERE  `USER_ID` = $USER_ID
 EOD;
-			$data = mysql_query( $sql ) or die (mysql_error ());
+			$data = $link->query( $sql );
+			$returnset = array ();
 
-			return $data;
+			while (($row = mysqli_fetch_array( $data )) != null) {
+				$element = array (
+					'REMOTE_ID' => $row['REMOTE_ID'],
+					'name' => $row['name']
+				);
+				array_push ($returnset, $element);
+			}
+
+			return $returnset;
 		}
 
 		public function getPlayingItem ($remote_url, $playerid=1) {
@@ -95,48 +113,48 @@ EOD;
 		}
 
 		public function getUrl ( $id ) {
-			global $sessionManager;
-			$user_id = $sessionManager->getUserId();
+			$link = XbmcRemoteManager::get_link();
+			$USER_ID = $_SESSION['USER_ID'];
 
 			if ($id == null) {
 				$sql = <<<EOD
 		SELECT  `ip` 
 		FROM  `xbmc_remote` 
-		WHERE  `USER_ID` = $user_id
+		WHERE  `USER_ID` = $USER_ID
 EOD;
 			} else {
 				$sql = <<<EOD
 		SELECT  `ip` 
 		FROM  `xbmc_remote` 
 		WHERE  `REMOTE_ID` = $id
-		AND  `USER_ID` = $user_id
+		AND  `USER_ID` = $USER_ID
 EOD;
 			}
 
-			$data = mysql_query( $sql ) or die ( mysql_error () );
+			$data = $link->query( $sql );
 
-			$row = mysql_fetch_array( $data );
+			$row = mysqli_fetch_array( $data );
 
 			return $row['ip'];
 		}
 
 		public function deleteById ( $id ) {
-			global $sessionManager;
-			$user_id = $sessionManager->getUserId();
+			$link = XbmcRemoteManager::get_link();
+			$USER_ID = $_SESSION['USER_ID'];
 
 			$sql = <<<EOD
 DELETE FROM `sarah`.`xbmc_remote`
 WHERE `xbmc_remote`.`REMOTE_ID` = $id
-AND  `USER_ID` = $user_id
+AND  `USER_ID` = $USER_ID
 EOD;
-			$data = mysql_query( $sql ) or die ( mysql_error () );
+			$data = $link->query( $sql );
 
 			return $data;
 		}
 
 		public function addRemote ( $name, $url ) {
-			global $sessionManager;
-			$user_id = $sessionManager->getUserId();
+			$link = XbmcRemoteManager::get_link();
+			$USER_ID = $_SESSION['USER_ID'];
 
 			$sql = <<<EOD
 INSERT INTO  `sarah`.`xbmc_remote` (
@@ -146,11 +164,11 @@ INSERT INTO  `sarah`.`xbmc_remote` (
 `ip`
 )
 VALUES (
-NULL ,  '$user_id',  '$name',  '$url'
+NULL ,  '$USER_ID',  '$name',  '$url'
 );
 EOD;
 
-			$data = mysql_query( $sql ) or die ( mysql_error () );
+			$data = $link->query( $sql );
 
 			return $data;
 		}
